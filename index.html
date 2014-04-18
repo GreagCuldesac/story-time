@@ -5,35 +5,60 @@
 </head>
 <body>
 
-<div id="viewport" style=" width:400px; height:200px; overflow: auto; margin: 200px auto 0; border:1px solid black;">
-    <div id ="para">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent imperdiet quam dui, id tempor tellus aliquam malesuada. Morbi feugiat dolor viverra erat sodales, malesuada consequat leo egestas. Sed rhoncus, ligula eu rutrum malesuada, nisl nulla tempor quam, et venenatis turpis arcu eget lorem. Sed vestibulum tellus in dui gravida, eget accumsan enim viverra. Praesent eget ante odio. Suspendisse sodales vel diam ac porta. In blandit et dui et vestibulum.
-
-        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Quisque tempus quam non ante sollicitudin, eget scelerisque neque molestie. Donec bibendum auctor leo, vitae pharetra tellus. Nam tincidunt tincidunt lorem, eget lacinia elit consequat at. Praesent sollicitudin, erat sit amet consectetur fermentum, libero mi rhoncus mauris, nec tempor sapien dolor eget tortor. Quisque eleifend tristique molestie. Aenean vitae nisi vehicula velit pellentesque vulputate ut id est. Maecenas scelerisque justo vitae magna porta, auctor tempor turpis tempus. Mauris a dolor eu nibh lacinia accumsan sit amet non urna. Proin sit amet magna nunc. Mauris non dictum nisi. Aliquam elementum nisl nec nunc sodales, et laoreet nisl rhoncus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porttitor feugiat sodales. Aenean nec quam hendrerit, ornare metus vel, aliquet tellus.
-
-        Sed lacinia eget quam vitae luctus. Etiam rutrum ac risus nec suscipit. In vel elit leo. Sed dictum metus sit amet lorem porta rhoncus. Curabitur sollicitudin scelerisque lacinia. Donec dapibus euismod fermentum. Mauris quis convallis massa. Proin ligula nisi, volutpat non urna in, ullamcorper porttitor ligula. Aliquam erat volutpat. Pellentesque gravida augue purus, quis pulvinar ligula posuere ac.
-
-        Vivamus porttitor augue nec diam convallis, sed vehicula orci pulvinar. Nulla faucibus orci eget ligula placerat elementum. Mauris pharetra orci vitae mauris cursus, nec venenatis odio malesuada. Ut eget metus in orci posuere posuere. Donec pulvinar neque eu lacus porttitor porttitor. Nam consequat faucibus sagittis. Fusce quis leo nec elit vehicula tempor sit amet vitae dolor. Nullam eleifend molestie nunc id vestibulum. Pellentesque a nulla congue, adipiscing risus vitae, accumsan leo. Integer sodales quis quam a pharetra. Sed a est nec turpis dapibus dignissim id eget lectus. Donec eget pellentesque mauris, et molestie nulla. Morbi vitae lectus vel lacus interdum pellentesque. Maecenas laoreet tincidunt eros ut dapibus.
-
-        Morbi faucibus urna ut dolor ultrices sodales. Aenean vel vehicula elit. Etiam tincidunt augue id enim auctor aliquet. Mauris pharetra arcu eu ligula vulputate feugiat. Nunc fermentum dignissim aliquam. Interdum et malesuada fames ac ante ipsum primis in faucibus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur aliquet quis lectus vitae ornare. Duis augue risus, aliquam id sollicitudin eu, pulvinar non nibh. Nunc nec justo a sapien sollicitudin adipiscing.
-    </div>
+<div style="width: 500px; margin: 300px auto">
+    <h1 id="storyText" style="text-align: center; font-family: arial, helvetica, sans-serif;"></h1>
 </div>
- <a id="stop" href="">TEST STOP</a>
-<a id="start" href="">TEST increase speed</a>
+<div style="position: absolute; top: 10px; left: 10px">
+    <button onclick="speedUp()" style="width: 100px; height: 50px;">Speed Up</button>
+    <button onclick="slowDown()" style="width: 100px; height: 50px;">Slow Down</button>
+</div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-<script src="test.js"></script>
 <script>
-    $("#viewport").storyTime({
-        propertyName: "a custom value"
-    });
-    $("#stop").click(function(e){
-        e.preventDefault();
-        $("#viewport").storyTime("stopAnimation");
-    });
-    $("#start").click(function(e){
-        e.preventDefault();
-        $("#viewport").storyTime("increaseSpeed");
-    });
+
+    var bookmark = 0;
+    var reader;
+    var pace = 2500;
+    function makeStory(){
+        var storyString = "Hey. Is this thing working? I guess if you're seeing this much, it must be working. Hopefully this looks okay. Screw it, I'm just going to mash on buttons for the rest of this text. Fdynsrtsbfgbsfgbsfgbsr, sfgb sfgbsrth uihadfui huisipubasdpfiubapiubaer. sdfoihs uindfui uiduinfuind, iuisuhsdiuiuh dspiu hpiudhpiu hpiuhaepiu pidpuigpuireui. piuhspiudfpiuh sdfpiuhfbg. siiushdfbpsiuhpiusghfb, suihsg and oijgdf. TWAT. hahahahahahahahahhahahhhaha, waffles. WAFFLES. iuasdhfuishndfihfbusuibghsuihsofigb, Fin. "
+        window.story = [];
+        var storyPiece = "";
+        var cursor = 0;
+        for (i = 0; i <=storyString.length; i++){
+            if (storyString.charAt(i) == "," || storyString.charAt(i) == "." || storyString.charAt(i) == "?"){
+                storyPiece = storyString.substr(cursor, i-(cursor-1));
+                cursor = i+2;
+                story.push(storyPiece);
+            }
+        }
+        storyTime();
+    }
+
+    function storyTime (){
+        reader = window.setTimeout(function(){
+            $("#storyText").text(story[bookmark]);
+            bookmark++;
+            if (bookmark < story.length){
+                storyTime();
+            }
+        },pace)
+    }
+    function speedUp (){
+        window.clearTimeout(reader);
+        pace = pace-500;
+        console.log("speeding up");
+        console.log(pace);
+        storyTime();
+    }
+    function slowDown (){
+        window.clearTimeout(reader);
+        pace = pace+500;
+        console.log("slowing down");
+        console.log(pace);
+        storyTime();
+    }
+    makeStory();
+
+
 </script>
 </body>
 </html>
